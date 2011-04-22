@@ -1,17 +1,58 @@
 #!/usr/bin/env python
-from NewuserHandler import NewuserHandler
-import socket
-import sys
 
-try:
-    while True:
-	server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	server.bind(("localhost", int(sys.argv[1])))
-	server.listen(10)
-	socket,addr = server.accept()
-	NewuserHandler(socket,addr,("Hello",1,2,3))
-except:
+import string, cgi, time
+from os import curdir, sep
+from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+
+handlers = [ 'realog',
+	     'newuser',
+	     'postinstall']
+
+handlerClasses = {}
+
+for handler in handlers:
+    c = handler.capitalize()
+    print handler, c
+    exec "from handlers.%s import %s" % (handler, c)
+    handlerClasses[handler] = eval(c)
+
+handlerClasses['realog']('sdf').printLog('hello')
+
+class HTTPException(Exception):
     pass
-finally:
-    server.close()
 
+class MyHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+	try:
+	    path = self.path
+	    cmd,args = path.partition('?')[0::2]
+	    cmd = cmd.lower().replace('/','')
+	    args = args.split('&')
+	    if cmd not in handlerClasses.keys():
+		raise HTTPException()
+	    handlerClasses[cmd](self.client_address[0]).printLog('connected')
+	    self.send_response(200)
+	    self.send_header('Content-type', 'text/html')
+	    self.end_headers()
+	    self.wfile.write(cmd)
+	    self.wfile.write('</br>')
+	    self.wfile.write(args)
+	    return
+	except HTTPException:
+	    self.send_error(404,'DIE')
+
+    def do_POST(self):
+	self.send_error(404, 'DIE')
+
+
+def main():
+    try:
+	server = HTTPServer(('',7070), MyHandler)
+	print 'Started HTTPServer'
+	server.serve_forever()
+    except KeyboardInterrupt:
+	print 'TERM signal recieved, shutting down server'
+	server.socket.close()
+
+if __name__=='__main__':
+    main()

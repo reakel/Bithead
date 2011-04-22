@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 
-class Logable:
+class Logable(object):
     logName = ''
-    def printLog(self,parent):
+
+    def __init__(self):
+	pass
+
+    def printLog(self,str):
 	if self.logName:
 	    name = self.logName
 	else:
