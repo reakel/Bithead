@@ -3,6 +3,9 @@
 import string, cgi, time
 from os import curdir, sep
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from ConfigParser import ConfigParser
+
+from database import Database
 
 handlers = [ 'realog',
 	     'newuser',
@@ -46,9 +49,16 @@ class MyHandler(BaseHTTPRequestHandler):
 
 
 def main():
+    configFiles = [u'/etc/bithead.conf']
+    config = ConfigParser()
+    config.read(configFiles)
+
+    port = config.getint('http','port')
+    Database.loadConfig(config)
+    
     try:
-	server = HTTPServer(('',7070), MyHandler)
-	print 'Started HTTPServer'
+	server = HTTPServer(('',port), MyHandler)
+	print "Started HTTPServer, listening to port %s" % (port)
 	server.serve_forever()
     except KeyboardInterrupt:
 	print 'TERM signal recieved, shutting down server'
