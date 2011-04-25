@@ -4,12 +4,20 @@ import string, cgi, time
 from os import curdir, sep
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from ConfigParser import ConfigParser
+import json
 
 from database import Database
 
 handlers = [ 'realog',
 	     'newuser',
 	     'postinstall']
+
+configFiles = [u'/etc/bithead.conf']
+config = ConfigParser()
+config.read(configFiles)
+
+port = config.getint('http','port')
+Database.loadConfig(config)
 
 handlerClasses = {}
 
@@ -18,8 +26,8 @@ for handler in handlers:
     print handler, c
     exec "from clienthandler.%s import %s" % (handler, c)
     handlerClasses[handler] = eval(c)
+    handlerClasses[handler].loadConfig(config)
 
-handlerClasses['realog']('sdf').printLog('hello')
 
 class HTTPException(Exception):
     pass
@@ -29,32 +37,51 @@ class MyHandler(BaseHTTPRequestHandler):
 	try:
 	    path = self.path
 	    cmd,args = path.partition('?')[0::2]
-	    cmd = cmd.lower().replace('/','')
-	    args = args.split('&')
+	    cmd = cmd.lower().lstrip('/')
 	    if cmd not in handlerClasses.keys():
 		raise HTTPException()
-	    handlerClasses[cmd](self.client_address[0]).printLog('connected')
+	    args = self.parseArgs(args)
+	    handler = handlerClasses[cmd](self.client_address[0],args)
+	    handler.printLog('Connected')
+	    response = handler.getResponse()
 	    self.send_response(200)
 	    self.send_header('Content-type', 'text/html')
 	    self.end_headers()
-	    self.wfile.write(cmd)
-	    self.wfile.write('</br>')
-	    self.wfile.write(args)
+	    self.wfile.write(json.dumps(response))
 	    return
 	except HTTPException:
 	    self.send_error(404,'DIE')
 
     def do_POST(self):
 	self.send_error(404, 'DIE')
+    
+    def parseArgs(self, args):
+	if not args: return {}
+	args = args.split('&')
+	ret = {}
+	for arg in args:
+	    arg = arg.strip(' ')
+	    arg = arg.split('=')
+	    n = len(arg)
+	    if n == 1:
+		key = arg[0]
+		value = True
+	    elif len(arg) == 2:
+		key, value = arg
+	    else:
+		raise HTTPException()
+	    
+	    ret[key] = value
+	return ret
+
+
+
+
+
+
 
 
 def main():
-    configFiles = [u'/etc/bithead.conf']
-    config = ConfigParser()
-    config.read(configFiles)
-
-    port = config.getint('http','port')
-    Database.loadConfig(config)
     
     try:
 	server = HTTPServer(('',port), MyHandler)
