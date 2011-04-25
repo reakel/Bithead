@@ -5,12 +5,15 @@ from os import curdir, sep
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from ConfigParser import ConfigParser
 import json
+from clienthandler import ClientHandler
 
 from database import Database
 
 handlers = [ 'realog',
 	     'newuser',
-	     'postinstall']
+	     'postinstall',
+	     'pubkey']
+
 
 configFiles = [u'/etc/bithead.conf']
 config = ConfigParser()
@@ -44,12 +47,21 @@ class MyHandler(BaseHTTPRequestHandler):
 	    handler = handlerClasses[cmd](self.client_address[0],args)
 	    handler.printLog('Connected')
 	    response = handler.getResponse()
+	    if not 'status' in response.keys(): 
+		response['status'] = '0'
 	    self.send_response(200)
 	    self.send_header('Content-type', 'text/html')
 	    self.end_headers()
 	    self.wfile.write(json.dumps(response))
 	    return
 	except HTTPException:
+	    self.send_error(404,'DIE')
+	except ClientHandler.Error as (errno, errstr):
+	    self.send_response(200)
+	    self.send_header('Content-type', 'text/html')
+	    self.end_headers()
+	    self.wfile.write(json.dumps({'status':errno}))
+	except Exception:
 	    self.send_error(404,'DIE')
 
     def do_POST(self):

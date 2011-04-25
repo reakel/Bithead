@@ -1,5 +1,4 @@
 from logable import Logable
-from threading import Thread
 
 class ClientHandler(Logable):
     config = {}
@@ -20,3 +19,5 @@ class ClientHandler(Logable):
     def loadConfig(config):
 	pass
 
+    class Error(Exception):
+	pass
