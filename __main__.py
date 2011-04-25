@@ -16,7 +16,7 @@ handlerClasses = {}
 for handler in handlers:
     c = handler.capitalize()
     print handler, c
-    exec "from handlers.%s import %s" % (handler, c)
+    exec "from clienthandlers.%s import %s" % (handler, c)
     handlerClasses[handler] = eval(c)
 
 handlerClasses['realog']('sdf').printLog('hello')
