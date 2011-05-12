@@ -15,6 +15,11 @@ class ClientHandler(Logable):
 	self.printLog('arguments: ' + self.args.__str__())
 	return self.args
 
+#doPostProcessing() is called after getResponse()
+    def doPostProcessing(self):
+	pass
+	    
+
 
     @staticmethod
     def loadConfig(config):

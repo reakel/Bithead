@@ -2,6 +2,7 @@
 
 import string, cgi, time
 from os import curdir, sep
+import sys
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from ConfigParser import ConfigParser
 import json
@@ -9,7 +10,7 @@ from clienthandler import ClientHandler
 
 from database import Database
 
-configFiles = ['/etc/bithead.conf']
+configFiles = ['/etc/bithead.conf',sys.argv[0]+'/bithead.conf']
 config = ConfigParser()
 config.read(configFiles)
 
@@ -57,7 +58,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 		response['status'] = '0'
 	    self.send_default_response()
 	    self.wfile.write(json.dumps(response))
-	    return
+	    handler.doPostProcessing()
 	except HTTPException:
 	    self.send_error(404,'DIE')
 	except ClientHandler.Error as (errno, errstr):

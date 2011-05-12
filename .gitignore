@@ -1,3 +1,4 @@
 #Files to ignore when adding to repo
 #.pyc files (generated when running python scripts)
 *.pyc
+*.conf
