@@ -2,7 +2,8 @@ from logable import Logable
 
 class ClientHandler(Logable):
     config = {}
-    def __init__(self,addr,args):
+    def __init__(self,addr,args,db):
+	self.db = db
 	self.addr = addr
 	self.args=args
 	self.pre = '<' + str(self.addr) + '> '

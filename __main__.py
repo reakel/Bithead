@@ -42,6 +42,7 @@ class HTTPException(Exception):
 
 class MyRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
+	db = Database()
 	try:
 	    path = self.path
 	    cmd,args = path.partition('?')[0::2]
@@ -49,7 +50,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 	    if cmd not in handlerClasses.keys():
 		raise HTTPException()
 	    args = self.parseArgs(args)
-	    handler = handlerClasses[cmd](self.client_address[0],args)
+	    handler = handlerClasses[cmd](self.client_address[0],args,db)
 	    handler.printLog('Connected')
 	    response = handler.getResponse()
 	    if not 'status' in response.keys(): 
@@ -64,6 +65,8 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 	    self.wfile.write(json.dumps({'status':errno}))
 	except Exception:
 	    self.send_error(404,'DIE')
+	finally:
+	    db.close()
     
     def send_default_response(self):
 	self.send_response(200)
