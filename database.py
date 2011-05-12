@@ -24,8 +24,7 @@ class Database(object):
 		    db = self.db)
     
     def getCursor(self):
-	if not self.conn or not self.conn.open:
-	    self.__dbConnect()
+	self.__dbConnect()
 	return self.conn.cursor()
 
     def close(self):
