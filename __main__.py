@@ -72,7 +72,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
     def send_default_response(self):
 	self.send_response(200)
 	self.send_header('Cache-Control', 'no-cache, must-revalidate')
-	self.send_header('Content-type', 'text/json')
+	self.send_header('Content-type', 'text/html')
 	self.end_headers()
 
     def do_POST(self):
