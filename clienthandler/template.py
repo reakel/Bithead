@@ -1,7 +1,7 @@
 exit() #remove this line
 
 class HandlerTemplate(ClientHandler):
-    def getResponse(self): i
+    def getResponse(self): 
 	#handles client request and returns a client response as a dict 
 	#for time consuming processes use doPostProcessing()
 	super(ClientHandler,self).getResponse() #this will print the request arguments to the log

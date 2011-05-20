@@ -2,3 +2,5 @@
 #.pyc files (generated when running python scripts)
 *.pyc
 *.conf
+*.note
+*.log
