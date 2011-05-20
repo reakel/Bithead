@@ -65,8 +65,10 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 	except ClientHandler.Error as (errno, errstr):
 	    self.send_default_response()
 	    self.wfile.write(json.dumps({'status':errno}))
-	except Exception:
-	    self.send_error(404,'DIE')
+	except Exception as e:
+	    type = e.__class__.__name__
+	    msg = json.dumps({ 'exeption': type, 'args':e.args})
+	    self.send_error(404,'Generic DIE: ' + msg)
 	finally:
 	    db.close()
     
