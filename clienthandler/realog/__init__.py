@@ -10,14 +10,14 @@ class Realog(ClientHandler):
 	# Tar vi i mot argumenter som dict
 	args = self.args
 
-	maskinnavn = args["maskinnavn"]
-	brukernavn = args["brukernavn"]
-	innloggingstid = args["innloggingstid"]
-	utloggingstid = args["utloggingstid"]
+	machine_name = args["maskinnavn"]
+	username = args["brukernavn"]
+	login_time = args["innloggingstid"]
+	loggout_time = args["utloggingstid"]
 	# Nåværende tid kan kanskje brukes i framtiden for å sikre mot nedtid på serveren
 
 	db.query("""INSERT INTO Comp_usage(CompID, User, LoginTime, LogoutTime)
 			VALUES(%s, %s, %s, %s)
-			UPDATE Computers SET OS='ubuntu' WHERE CompID LIKE %s""" %(maskinavn, brukernavn, innloggingstid, utloggingstid, maskinnavn))
+			UPDATE Computers SET OS='ubuntu' WHERE CompID LIKE %s""" %(machine_name, username, login_time, loggout_time))
 
         # Skal returnere dict
