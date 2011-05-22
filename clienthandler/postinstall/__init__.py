@@ -46,4 +46,3 @@ class Postinstall(ClientHandler):
     def loadConfig(config):
 	#TODO: load AD domain,user and password from config file
 	pass
-
