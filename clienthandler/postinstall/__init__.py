@@ -2,7 +2,7 @@ from clienthandler import ClientHandler
 from os import system
 
 class Postinstall(ClientHandler):
-    #disse to variablene blir static
+    #disse to variablene blir static
     #TODO: deklarer disse i constructor
     knr_in_DB = False
     knr = None
