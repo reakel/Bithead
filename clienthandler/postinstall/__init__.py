@@ -3,22 +3,22 @@ from os import system
 
 class Postinstall(ClientHandler):
     #disse to variablene blir static
-    #TODO: deklarer disse i constructor
-    knr_in_DB = False
-    knr = None
-    
-    def __init__(self): #constructor
-        super(Postinstall,self).__init__()
- 
-    def getResponse(self):
-        self.mac = self.args['mac']
-        self.getKnr()
-        if not self.knr: 
-            raise ClientHandler.Error(1001,'CompID not found in the database.')
-        self.knr_in_DB = True
-        puppetca_cmd = "puppetca -c" + " " + self.knr + ".felles.ntnu.no"
-        #system(puppetca_cmd)
-        return { 'status': '0', 'CompID': self.knr }	
+    #TODO: deklarer disse i constructor
+    knr_in_DB = False
+    knr = None
+    
+    def __init__(self): #constructor
+        super(Postinstall,self).__init__()
+ 
+    def getResponse(self):
+        self.mac = self.args['mac']
+        self.getKnr()
+        if not self.knr: 
+            raise ClientHandler.Error(1001,'CompID not found in the database.')
+        self.knr_in_DB = True
+        puppetca_cmd = "puppetca -c" + " " + self.knr + ".felles.ntnu.no"
+        #system(puppetca_cmd)
+        return { 'status': '0', 'CompID': self.knr }	
 
     def getKnr(self):
         computerDB = open('/usr/local/share/bithead/database/computers_db', 'r')	
@@ -46,4 +46,3 @@ class Postinstall(ClientHandler):
     def loadConfig(config):
 	#TODO: load AD domain,user and password from config file
 	pass
-
