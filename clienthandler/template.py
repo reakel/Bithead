@@ -1,6 +1,10 @@
 exit() #remove this line
 
 class HandlerTemplate(ClientHandler):
+    def __init__(self): #Constructor
+	super(HandlerTemplate,self).__init__() #always call constructor for superclass
+	#declare member variables here if needed
+
     def getResponse(self): 
 	#handles client request and returns a client response as a dict 
 	#for time consuming processes use doPostProcessing()
@@ -23,6 +27,13 @@ class HandlerTemplate(ClientHandler):
 	pass
 	#continue request handling after sending response
 	#do not return anything
-
+    
+    @staticmethod
+    def loadConfig(config):
+	#load settings from default config file (/etc/bithead.conf)
+	#Loaded settings should usualy be assigned to static variables
+	#example, get a password from the 'templatehandler' section:
+	#   HandlerTemplate.pass = config.get('templatehandler','pass')
+	pass
 
 
