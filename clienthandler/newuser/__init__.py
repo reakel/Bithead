@@ -10,7 +10,7 @@ class Newuser(ClientHandler):
         if not authUser():
             raise ClientHandler.Error(200, "User is not authorized!")
     try:
-	cmd = "ssh root@%s -o StrictHostKeyChecking=no id %s" (self.args, user)
+	cmd = "ssh root@%s -o StrictHostKeyChecking=no id %s" % (self.args, user)
 	sshreturn = subprocess.check_output(cmd)
     except CalledProcessError as e:
 	raise ClientHandler.Error(errno, Error when tryin to ssh to client: e.returncode e.output
