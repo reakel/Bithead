@@ -26,6 +26,9 @@ class Database(object):
     def getCursor(self):
 	self.__dbConnect()
 	return self.conn.cursor()
+    
+    def cursor(self): #convenience method
+        return self.getCursor()
 
     def close(self):
 	if self.conn and self.conn.open:
