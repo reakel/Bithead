@@ -11,9 +11,10 @@ class Newuser(ClientHandler):
             raise ClientHandler.Error(200, "User is not authorized!")
     try:
 	cmd = "ssh root@%s -o StrictHostKeyChecking=no id %s" % (self.args, user)
-	sshreturn = subprocess.check_output(cmd)
+	sshreturn = subprocess.check_output(cmd.split(" "))
     except CalledProcessError as e:
-	raise ClientHandler.Error(errno, Error when tryin to ssh to client: e.returncode e.output
+        errmsg = "Error when tryin to ssh to client:" + e.returncode + e.output
+	raise ClientHandler.Error(200, errmsg)
     
     #Use regexp to get userid and groupid from output from ssh
     m = re.match("uid=(\d+)\D+?gid=(\d+)", sshreturn)
