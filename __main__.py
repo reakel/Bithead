@@ -7,8 +7,9 @@ import sys
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from ConfigParser import ConfigParser
 import json
-from clienthandler import ClientHandler
+import re
 
+from clienthandler import ClientHandler
 from database import Database
 
 configFiles = ['/etc/bithead.conf',sys.argv[0]+'/bithead.conf']
@@ -83,6 +84,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
     
     def parseArgs(self, args):
 	if not args: return {}
+	argscheck = re.compile('[^a-zA-Z0-9,;:_\\-+]')
 	args = args.split('&')
 	ret = {}
 	for arg in args:
@@ -96,7 +98,8 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 		key, value = arg
 	    else:
 		raise HTTPException()
-	    
+	    if argscheck.search(key) or argscheck.search(value):
+		raise HTTPException()
 	    ret[key] = value
 	return ret
 
