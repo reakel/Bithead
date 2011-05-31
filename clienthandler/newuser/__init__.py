@@ -4,11 +4,11 @@ import re
 class Newuser(ClientHandler):
 
     def getResponse(self):
-        super(NewUser, self).getResponse()
+        super(Newuser, self).getResponse()
         user = self.args['user']
-        userdir = userdirs + user
-        if not authUser():
-            raise ClientHandler.Error(200, "User is not authorized!")
+        userdir = '/storage/ubuntu10-profiles/' + user
+       # if not authUser(user):
+        #    raise ClientHandler.Error(200, "User is not authorized!")
         try:
             cmd = "ssh root@%s -o StrictHostKeyChecking=no id %s" % (self.addr, user)
             sshreturn = subprocess.check_output(cmd.split(" "))
@@ -20,18 +20,18 @@ class Newuser(ClientHandler):
         m = re.search(r"uid=(\d+)\D+?gid=(\d+)", sshreturn)
         if m is None:
             raise ClientHandler.Error(200, "Id not found through ssh")
-        uid = m.groups(0)
-        gid = m.groups(1)
-        idmuns = uid +":"+gid
+        uid = m.group(1)
+        gid = m.group(2)
+        idnums = uid + ":" + gid
         
         #Creates users home directory 
         if subprocess.check_call(["mkdir", userdir]):
             raise ClientHandler.Error(200, "mkdir error")
         #Changes owner and group of users home directory
-        if subprocess.check_call(["chown", idnums, userdir]):
+        if subprocess.check_call(["chown", "-R", idnums, userdir]):
             raise ClientHandler.Error(200, "chown error")
     #Sets permissions for users home directory
-        if subprocess.check_call(["chmod", "700", userdir]):
+        if subprocess.check_call(["chmod", "-R", "700", userdir]):
             raise ClientHandler.Error(200, "chmod error")
         
         return {"status": 0}
