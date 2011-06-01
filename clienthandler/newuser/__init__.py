@@ -6,9 +6,9 @@ class Newuser(ClientHandler):
     def getResponse(self):
         super(Newuser, self).getResponse()
         user = self.args['user']
-        userdir = '/storage/ubuntu10-profiles/' + user
-       # if not authUser(user):
-        #    raise ClientHandler.Error(200, "User is not authorized!")
+        userdir = self.userdirs + user
+        if not self.authUser(user):
+            raise ClientHandler.Error(200, "User is not authorized!")
         try:
             cmd = "ssh root@%s -o StrictHostKeyChecking=no id %s" % (self.addr, user)
             sshreturn = subprocess.check_output(cmd.split(" "))
