@@ -34,6 +34,9 @@ class Newuser(ClientHandler):
         if subprocess.check_call(["chmod", "-R", "700", userdir]):
             raise ClientHandler.Error(200, "chmod error")
         
+        logstring = "Created home directory for %s in %s width uid=%s and gid=%s" % (user, userdir, uid, gid)
+        self.printLog(logstring)
+        
         return {"status": 0}
 
     @staticmethod
@@ -44,3 +47,6 @@ class Newuser(ClientHandler):
     def authUser(self, user):
 #SSHe til maskina, autentisere bruker og hente ut uid og gid.
         return True
+
+    def printLog(self, str):
+        super(Newuser, self).printLog(str)
