@@ -34,7 +34,7 @@ class Newuser(ClientHandler):
         if subprocess.check_call(["chmod", "-R", "700", userdir]):
             raise ClientHandler.Error(200, "chmod error")
         
-        logstring = "Created home directory for %s in %s width uid=%s and gid=%s" % (user, userdir, uid, gid)
+        logstring = "Created home directory for %s in %s with uid=%s and gid=%s" % (user, userdir, uid, gid)
         self.printLog(logstring)
         
         return {"status": 0}
