@@ -60,14 +60,18 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 		response['status'] = '0'
 	    self.send_default_response()
 	    self.wfile.write(json.dumps(response))
+	    print "DONE"
 	    handler.doPostProcessing()
 	except HTTPException:
 	    self.send_error(404,'DIE')
 	except ClientHandler.Error as (errno, errstr):
 	    self.send_default_response()
+	    print 'Error:', errno, errstr
 	    self.wfile.write(json.dumps({'status':errno}))
 	except Exception as e:
 	    type = e.__class__.__name__
+	    print "Exception"
+	    print type
 	    msg = json.dumps({ 'exeption': type, 'args':e.args})
 	    self.send_error(404,'Generic DIE: ' + msg)
 	finally:
