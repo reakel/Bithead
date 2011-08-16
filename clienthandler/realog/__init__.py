@@ -3,10 +3,7 @@ from clienthandler import ClientHandler
 from datetime import *
 
 def str2datetime(str):
-    tt = [int(_) for _ in str.split(',')]
-    if len(tt) != 6:
-	raise ClientHandler.Error(123, 'Invalid datetimestring')
-    return datetime(*tt)
+    return datetime.strptime(str,'%Y-%m-%d %H:%M:%S.%f')
 
 class Realog(ClientHandler):
     def getResponse(self):
@@ -36,7 +33,7 @@ class Realog(ClientHandler):
 	    c = self.db.getCursor()
 	    c.execute("""INSERT INTO Comp_usage(CompID, User, LoginTime, LogoutTime)
 			VALUES(%s, %s, %s, %s);
-			UPDATE Computers SET OS=%s WHERE CompID LIKE %s""", (machine_name, username, login_time, logout_time, machine_name))
+			UPDATE Computers SET OS=%s WHERE CompID LIKE %s""", (machine_name, username, login_time, logout_time, os, machine_name))
 	except Exception as e:
 	    raise Realog.Error(124, 'DB query failed: ' + e.message + e.__str__())
 

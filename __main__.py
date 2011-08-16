@@ -89,7 +89,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
     
     def parseArgs(self, args):
 	if not args: return {}
-	argscheck = re.compile('[^ a-zA-Z0-9,;:_\\-+]')
+	argscheck = re.compile('[^ a-zA-Z0-9,;:_\\-+\.]')
 	args = parse_qs(args, True, True) 
 	for key in args.keys():
 	    value = args[key][0]
