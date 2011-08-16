@@ -8,6 +8,7 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from ConfigParser import ConfigParser
 import json
 import re
+from urlparse import parse_qs
 
 from clienthandler import ClientHandler
 from database import Database
@@ -88,24 +89,14 @@ class MyRequestHandler(BaseHTTPRequestHandler):
     
     def parseArgs(self, args):
 	if not args: return {}
-	argscheck = re.compile('[^a-zA-Z0-9,;:_\\-+]')
-	args = args.split('&')
-	ret = {}
-	for arg in args:
-	    arg = arg.strip(' ')
-	    arg = arg.split('=')
-	    n = len(arg)
-	    if n == 1:
-		key = arg[0]
-		value = True
-	    elif len(arg) == 2:
-		key, value = arg
-	    else:
-		raise HTTPException()
+	argscheck = re.compile('[^ a-zA-Z0-9,;:_\\-+]')
+	args = parse_qs(args, True, True) 
+	for key in args.keys():
+	    value = args[key][0]
+	    args[key] = value
 	    if argscheck.search(key) or argscheck.search(value):
 		raise HTTPException()
-	    ret[key] = value
-	return ret
+	return args
 
 if __name__=='__main__':
     try:

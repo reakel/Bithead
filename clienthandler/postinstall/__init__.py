@@ -3,16 +3,19 @@ from os import system
 
 class Postinstall(ClientHandler):
     #disse to variablene blir static
-    #TODO: deklarer disse i constructor
     knr_in_DB = False
     knr = None
+    passwd = 'nopass' # TODO: get this from somwhere else
     
-    def __init__(self): #constructor
-        super(Postinstall,self).__init__()
+    def __init__(self,addr,args,db): #constructor
+        super(Postinstall,self).__init__(addr,args,db)
+	self.knr_in_DB = False
+	self.knr = None
  
     def getResponse(self):
-        self.mac = self.args['mac']
-        self.getKnr()
+	self.mac = self.args['mac'] # TODO: dict entry 'mac' may not exist. Implement a check.
+        self.fetchKnr()
+	print self.args['a']
         if not self.knr: 
             raise ClientHandler.Error(1001,'CompID not found in the database.')
         self.knr_in_DB = True
@@ -20,7 +23,7 @@ class Postinstall(ClientHandler):
         #system(puppetca_cmd)
         return { 'status': '0', 'CompID': self.knr }	
 
-    def getKnr(self):
+    def fetchKnr(self):
         computerDB = open('/usr/local/share/bithead/database/computers_db', 'r')	
         compDB = computerDB.readlines()
         
@@ -31,16 +34,20 @@ class Postinstall(ClientHandler):
                 break
     
     def doPostProcessing(self):
+	    if not self.knr_in_DB:
+		#Computer was not authenticated in getResponse(), exit.
+		return
 	    pre = "ssh -o StrictHostKeyChecking=no root@" + self.addr
-#	    system(pre + " \'domainjoin-cli setname " + self.knr + "'")
-#	    system("echo \'" + Postinstall.passwd + "\' | " + pre + " \'xargs domainjoin-cli felles.ntnu.no spokelsesadmin\'")
-#	    system(pre + " \'/root/postinstall/lwreg\'")
-#	    system(pre + " \'reboot\'")			
-        # Checking commands, printing to log:
-	    self.printLog(pre + " \'domainjoin-cli setname " + self.knr + "'")
-	    self.printLog("echo \'" + Postinstall.passwd + "\' | " + pre + " \'xargs domainjoin-cli felles.ntnu.no spokelsesadmin\'")
-	    self.printLog(pre + " \'/root/postinstall/lwreg\'")
-	    self.printLog(pre + " \'reboot\'")			
+	    #Preparing cmds
+	    cmds = []
+	    cmds.append(pre + " \'domainjoin-cli setname " + self.knr + "'")
+	    cmds.append("echo \'" + Postinstall.passwd + "\' | " + pre + " \'xargs domainjoin-cli felles.ntnu.no spokelsesadmin\'")
+	    cmds.append(pre + " \'/root/postinstall/lwreg\'")
+	    cmds.append(pre + " \'reboot\'")
+	    #Execute cmds and print to log
+	    for cmd in cmds:
+		self.printLog(cmd)
+		#system(cmd)
     
     @staticmethod
     def loadConfig(config):
