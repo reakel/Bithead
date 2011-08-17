@@ -7,6 +7,24 @@ from pickle import dump,load
 from platform import uname
 import socket
 
+##-------------------------------------------------------------##
+##                              Realog v. 2.0                              ##
+##-------------------------------------------------------------##
+##
+## Client side Cross platform Realog
+##      This program is written so that the computer usage 
+##      on the student computer labs at NTNU can be 
+##      monitored. bhc-realog can be run with two 
+##      arguments: login or logout. Depending on the 
+##      argument,  the program will write and read from a 
+##      logfile, and send log entries to bithead.
+##
+## Last change: 17.08.2011 
+##
+## Reakel NTNU / Joachim Kruger
+##                                                                                  ##
+#############################################
+
 # Set the path for the logfile with respect to the OS
 p = environ.get('WINDIR')
 if p:
