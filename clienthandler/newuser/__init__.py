@@ -5,7 +5,7 @@ class Newuser(ClientHandler):
 
     def getResponse(self):
         super(Newuser, self).getResponse()
-	#self.args needs: 'user'
+        #self.args needs: 'user'
         user = self.args['user']
         userdir = self.userdirs + user
         if not self.authUser(user):
@@ -25,19 +25,19 @@ class Newuser(ClientHandler):
         gid = m.group(2)
         idnums = uid + ":" + gid
         
-	try:
-	    #Creates users home directory 
-	    subprocess.check_call(["mkdir", userdir])
-	    #Changes owner and group of users home directory
-	    subprocess.check_call(["chown", "-R", idnums, userdir])
-	    #Sets permissions for users home directory
-	    subprocess.check_call(["chmod", "-R", "700", userdir])
-	    
-	    logstring = "Created home directory for %s in %s with uid=%s and gid=%s" % (user, userdir, uid, gid)
-	    self.printLog(logstring)
-	    return {"status": 0}
-	except CalledProcessError as e: #thrown by subprocess.check_all()
-	    raise ClientHandler.Error(e.returncode, "Subprocess error: " + e.message)
+        try:
+            #Creates users home directory 
+            subprocess.check_call(["mkdir", userdir])
+            #Changes owner and group of users home directory
+            subprocess.check_call(["chown", "-R", idnums, userdir])
+            #Sets permissions for users home directory
+            subprocess.check_call(["chmod", "-R", "700", userdir])
+            
+            logstring = "Created home directory for %s in %s with uid=%s and gid=%s" % (user, userdir, uid, gid)
+            self.printLog(logstring)
+            return {"status": 0}
+        except CalledProcessError as e: #thrown by subprocess.check_all()
+            raise ClientHandler.Error(e.returncode, "Subprocess error: " + e.message)
 
 
 

@@ -3,27 +3,27 @@ from logable import Logable
 class ClientHandler(Logable):
     config = {}
     def __init__(self,addr,args,db):
-	self.db = db
-	self.addr = addr
-	self.args=args
-	self.pre = '<' + str(self.addr) + '> '
+        self.db = db
+        self.addr = addr
+        self.args=args
+        self.pre = '<' + str(self.addr) + '> '
 
     def printLog(self,str):
-	super(ClientHandler,self).printLog(self.pre + str)
+        super(ClientHandler,self).printLog(self.pre + str)
 
     def getResponse(self):
-	self.printLog('arguments: ' + self.args.__str__())
-	return self.args
+        self.printLog('arguments: ' + self.args.__str__())
+        return self.args
 
 #doPostProcessing() is called after getResponse()
     def doPostProcessing(self):
-	pass
-	    
+        pass
+            
 
 
     @staticmethod
     def loadConfig(config):
-	pass
+        pass
 
     class Error(Exception):
-	pass
+        pass

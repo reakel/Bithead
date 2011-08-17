@@ -10,29 +10,29 @@ class Database(object):
 
     @staticmethod
     def loadConfig(config):
-	section = 'database'
-	Database.host = config.get(section, 'host')
-	Database.user = config.get(section, 'user')
-	Database.passwd = config.get(section, 'passwd')
-	Database.db = config.get(section, 'db')
+        section = 'database'
+        Database.host = config.get(section, 'host')
+        Database.user = config.get(section, 'user')
+        Database.passwd = config.get(section, 'passwd')
+        Database.db = config.get(section, 'db')
 
     def __dbConnect(self):
-	if not self.conn or not self.conn.open:
-	    self.conn = MySQLdb.connect (host = self.host,
-		    user = self.user,
-		    passwd = self.passwd,
-		    db = self.db)
+        if not self.conn or not self.conn.open:
+            self.conn = MySQLdb.connect (host = self.host,
+                    user = self.user,
+                    passwd = self.passwd,
+                    db = self.db)
     
     def getCursor(self):
-	self.__dbConnect()
-	return self.conn.cursor()
+        self.__dbConnect()
+        return self.conn.cursor()
     
     def cursor(self): #convenience method
         return self.getCursor()
 
     def close(self):
-	if self.conn and self.conn.open:
-	    self.conn.close()
+        if self.conn and self.conn.open:
+            self.conn.close()
 
 if __name__ == '__main__':
     configFiles = [u'/etc/bithead.conf']
@@ -43,6 +43,6 @@ if __name__ == '__main__':
     c = db.getCursor()
     c.execute("""SELECT * FROM Computers""")
     for row in c.fetchall():
-	print row
+        print row
     c.close()
     db.close()
