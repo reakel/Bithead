@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Common client library for Bithead
+Common library for Bithead clients
 """
 from urllib import urlencode, urlopen, quote
 from urlparse import unquote
@@ -19,9 +19,9 @@ def sendRequest(target,**kwargs):
     Send request to server module designated by 'target' (i.e. 'Realog') accepts parameters as dict.
     Throws exceptions on http errors or failure to parse json
     """
-    un = platform.uname()
-    kwargs["compinfo"] = un
-    kwargs["os"] = un[0]
+    un = getHostInfo()
+    kwargs["hostinfo"] = getHostInfo()
+    kwargs["os"] = un['system']
     kwargs['compid'] = "k4444" #un[1]
     posts = json.dumps(kwargs)
     posts=quote(posts)
@@ -31,5 +31,9 @@ def sendRequest(target,**kwargs):
     fh.close()
     return ret
 
+def getHostInfo():
+    keys = ['system','node','release','version','machine','processor']
+    ret = dict(zip(keys,platform.uname()))
+    return ret
 
 
