@@ -8,7 +8,7 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from ConfigParser import ConfigParser
 import json
 import re
-from urlparse import parse_qs
+from urlparse import parse_qs,unquote
 
 from clienthandler import ClientHandler
 from database import Database
@@ -54,6 +54,9 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 	    if cmd not in handlerClasses.keys():
 		raise HTTPException()
 	    args = self.parseArgs(args)
+	    if self.args: args.update(self.args)
+	    #self.validateArgs(args)
+	    args=self.args
 	    handler = handlerClasses[cmd](self.client_address[0],args,db)
 	    handler.printLog('Connected')
 	    response = handler.getResponse()
@@ -85,17 +88,31 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 	self.end_headers()
 
     def do_POST(self):
-	self.send_error(404, 'DIE')
+	try:
+	    posts = self.rfile.read(int(self.headers['Content-Length']))
+	    posts = unquote(posts)
+	    self.args = json.loads(posts)
+	    self.do_GET()
+	except Exception as e:
+	    self.send_error(404,'Generic DIE: ' + e.message)
+	    print e.message
+
+
+
+    def validateArgs(self,args):
+	argscheck = re.compile('[^ a-zA-Z0-9,;:_\\-+\.]')
+	for item in args.items():
+	    key,value = item
+	    if argscheck.search(key) or argscheck.search(value):
+		raise HTTPException()
+
     
     def parseArgs(self, args):
 	if not args: return {}
-	argscheck = re.compile('[^ a-zA-Z0-9,;:_\\-+\.]')
 	args = parse_qs(args, True, True) 
 	for key in args.keys():
 	    value = args[key][0]
 	    args[key] = value
-	    if argscheck.search(key) or argscheck.search(value):
-		raise HTTPException()
 	return args
 
 if __name__=='__main__':

@@ -30,6 +30,7 @@ class Realog(ClientHandler):
 
 	ret = {}
 	try:
+	    print "INSERT INTO Comp_usage(CompID, User, LoginTime, LogoutTime) VALUES(%s, %s, %s, %s); UPDATE Computers SET OS=%s WHERE CompID LIKE %s" % (machine_name, username, login_time, logout_time, os, machine_name)
 	    c = self.db.getCursor()
 	    c.execute("""INSERT INTO Comp_usage(CompID, User, LoginTime, LogoutTime)
 			VALUES(%s, %s, %s, %s);
