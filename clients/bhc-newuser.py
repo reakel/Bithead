@@ -6,6 +6,7 @@ from os import path, stat, chmod, chown
 from pwd import getpwnam
 
 
+
 """
 This script checks if a user's directory exists with correct permissions.
 If not it tries to fix it, contacting the server if necessary.
