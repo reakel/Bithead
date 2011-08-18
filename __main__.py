@@ -48,6 +48,10 @@ class MyRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         db = Database()
         try:
+	    try:
+		self.args
+	    except AttributeError:
+		self.args = {}
             path = self.path
             cmd,args = path.partition('?')[0::2]
             cmd = cmd.lower().lstrip('/')

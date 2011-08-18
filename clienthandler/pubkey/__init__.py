@@ -12,5 +12,5 @@ class Pubkey(ClientHandler):
 	return { "key": Pubkey.key }
 
     def authConn(self):
-	return False 
+	return True 
 

@@ -34,9 +34,10 @@ def sendRequest(target,**kwargs):
     fh = urlopen(url, data=posts)
     ret = json.load(fh)
     fh.close()
-    status = ret.get('status')
+    status = int(ret.get('status'))
+    print ret
     if status is None or status != 0:
-	raise RequestError("Request error: " + ret.get('errormessage'))
+	raise RequestError("Request error: " + str(ret.get('errormessage')))
     return ret
 
 def getInfo():
