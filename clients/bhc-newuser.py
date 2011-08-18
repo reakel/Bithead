@@ -12,7 +12,7 @@ if len(argv) > 1:
     un = argv[1]
     if re.search("[^A-Za-z0-9_-]",un):
         printUsageAndExit()
-    bhc.sendRequest('newuser',user=un)
+    print bhc.sendRequest('newuser',user=un)
 else:
     printUsageAndExit()
 
