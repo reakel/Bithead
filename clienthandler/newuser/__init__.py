@@ -1,6 +1,8 @@
 from clienthandler import ClientHandler
 import subprocess
 import re
+from os import chmod, mkdir, chown
+import os
 class Newuser(ClientHandler):
 
     def getResponse(self):
@@ -22,23 +24,23 @@ class Newuser(ClientHandler):
         m = re.search(r"uid=(\d+)\D+?gid=(\d+)", sshreturn)
         if m is None:
             raise ClientHandler.Error(200, "Id not found through ssh")
-        uid = m.group(1)
-        gid = m.group(2)
-        idnums = uid + ":" + gid
+        uid = int(m.group(1))
+        gid = int(m.group(2))
         
-        try:
-            #Creates users home directory 
-            subprocess.check_call(["mkdir", userdir])
-            #Changes owner and group of users home directory
-            subprocess.check_call(["chown", "-R", idnums, userdir])
-            #Sets permissions for users home directory
-            subprocess.check_call(["chmod", "-R", "700", userdir])
-            
-            logstring = "Created home directory for %s in %s with uid=%s and gid=%s" % (user, userdir, uid, gid)
-            self.printLog(logstring)
-            return {"status": 0}
-        except CalledProcessError as e: #thrown by subprocess.check_all()
-            raise ClientHandler.Error(e.returncode, "Subprocess error: " + e.message)
+	if os.path.exists(userdir):
+	    if not os.path.isdir(userdir):
+		raise ClientHandler.Error(userdir + " exists but is not directory")
+	else:
+	    #Creates users home directory 
+	    mkdir(userdir)
+	    logstring = "Created home directory for %s in %s with uid=%s and gid=%s" % (user, userdir, uid, gid)
+	    self.printLog(logstring)
+        #Changes owner and group of users home directory
+        chown(userdir,uid,gid)
+        #Sets permissions for users home directory
+	chmod(userdir,0700)
+        
+        return {"status": 0}
 
 
 

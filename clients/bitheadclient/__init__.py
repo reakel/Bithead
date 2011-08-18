@@ -15,6 +15,9 @@ host = "curie.nt.ntnu.no"
 port = 7070
 addr = "%s://%s:%i/" % (proto, host, port)
 
+class RequestError(Exception):
+    pass
+
 def sendRequest(target,**kwargs):
     """
     Send request to server module designated by 'target' (i.e. 'Realog') accepts parameters as dict.
@@ -31,6 +34,9 @@ def sendRequest(target,**kwargs):
     fh = urlopen(url, data=posts)
     ret = json.load(fh)
     fh.close()
+    status = ret.get('status')
+    if status is None or status != 0:
+	raise RequestError("Request error: " + ret.get('errormessage')
     return ret
 
 def getInfo():
