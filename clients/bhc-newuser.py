@@ -35,7 +35,7 @@ if len(argv) > 1: #argument provided
 		if gid != st.st_gid:
 		    chown(userdir, -1, gid)
 		mode = oct(st.st_mode)[2:]
-		if mode != 0700:
+		if mode != oct(0700):
 		    chmod(userdir,0700)		
 		exit(0)
 	else:
