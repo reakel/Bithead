@@ -18,6 +18,7 @@ class Newuser(ClientHandler):
             raise ClientHandler.Error(200, errmsg)
     
     #Use regexp to get userid and groupid from output from ssh
+	self.printLog(sshreturn)
         m = re.search(r"uid=(\d+)\D+?gid=(\d+)", sshreturn)
         if m is None:
             raise ClientHandler.Error(200, "Id not found through ssh")
