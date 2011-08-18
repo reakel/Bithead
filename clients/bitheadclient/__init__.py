@@ -36,7 +36,7 @@ def sendRequest(target,**kwargs):
     fh.close()
     status = ret.get('status')
     if status is None or status != 0:
-	raise RequestError("Request error: " + ret.get('errormessage')
+	raise RequestError("Request error: " + ret.get('errormessage'))
     return ret
 
 def getInfo():
