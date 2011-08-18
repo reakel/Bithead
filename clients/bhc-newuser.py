@@ -34,10 +34,10 @@ if len(argv) > 1: #argument provided
 	    if uid == st.st_uid: 
 		if gid != st.st_gid:
 		    chown(userdir, -1, gid)
-		    exit(0)
 		mode = oct(st.st_mode)[2:]
 		if mode != 0700:
 		    chmod(userdir,0700)		
+		exit(0)
 	else:
 	    #homedir exists but is not dir
 	    exit(2)
