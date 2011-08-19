@@ -1,0 +1,10 @@
+Package: bithead-clients
+Version: 0.7
+Section: web 
+Priority: optional
+Architecture: all
+Essential: no
+Installed-Size: 20
+Maintainer: Reakel [reakel@.nt.ntnu.no]
+Provides: bithead-clients
+Description: Clients for the Bithead admin system.

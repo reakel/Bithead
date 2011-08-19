@@ -7,3 +7,8 @@
 J_og_t_notater
 *.swp
 .*.swp
+*.deb
+clients/deb-install/usr
+clients/deb-install/usr/*
+clients/deb-install/usr/.*
+
