@@ -19,7 +19,6 @@ class Postinstall(ClientHandler):
     #disse to variablene blir static
     knr_in_DB = False
     knr = None
-    passwd = 'nopass' # TODO: get this from somwhere else
     
     def __init__(self,addr,args,db): #constructor
         super(Postinstall,self).__init__(addr,args,db)
@@ -37,6 +36,9 @@ class Postinstall(ClientHandler):
         return { 'status': '0', 'CompID': self.knr }        
 
     def fetchKnr(self):
+	print self.mac
+	self.knr = "k2202"
+	return
 	computerDB = open('/usr/local/share/bithead/database/computers_db', 'r') # TODO: get file path from config
         compDB = computerDB.readlines()
         computerDB.close()
@@ -55,15 +57,16 @@ class Postinstall(ClientHandler):
             #Preparing cmds
             cmds = []
             cmds.append(pre + " \'domainjoin-cli setname " + self.knr + "'")
-            cmds.append("echo \'" + Postinstall.passwd + "\' | " + pre + " \'xargs domainjoin-cli felles.ntnu.no spokelsesadmin\'")
+            cmds.append("echo \'" + Postinstall.adpassword + "\' | " + pre + " \'xargs domainjoin-cli felles.ntnu.no " + Postinstall.aduser + "\'")
             cmds.append(pre + " \'/root/postinstall/lwreg\'")
             cmds.append(pre + " \'reboot\'")
             #Execute cmds and print to log
             for cmd in cmds:
                 self.printLog(cmd)
-                #system(cmd)
+                system(cmd)
     
     @staticmethod
     def loadConfig(config):
-        #TODO: load AD domain,user and password from config file
-        pass
+	section = 'postinstall'
+	Postinstall.adpassword = config.get(section, 'adpassword')
+	Postinstall.aduser = config.get(section, 'aduser')
