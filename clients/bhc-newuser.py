@@ -3,6 +3,7 @@ import bitheadclient as bhc
 from sys import argv
 import re
 from os import path, stat, chmod, chown
+from path import environ
 from pwd import getpwnam
 
 
@@ -13,18 +14,16 @@ If not it tries to fix it, contacting the server if necessary.
 exi|ts with code != 0 if it cant be fixed
 takes user name as argument
 """
+pamtype = environ.get('PAM_TYPE')
+if not pamtype or pamtype != 'open_session':
+    exit(0)
 
 homedir = '/home/WIN-NTNU-NO/'
 
-def printUsageAndExit():
-    print "Usage: ./bhc-newuser.py <username>"
-    exit(1)
-
-
 if len(argv) > 1: #argument provided
-    un = argv[1]
+    un = environ('PAM_USER')
     if re.search("[^A-Za-z0-9_-]",un): #check if argument is a valid user name
-        printUsageAndExit()
+	exit(1)
     s = getpwnam(un) #throws exception if un does not match a user 
     userdir = s.pw_dir
     uid = s.pw_uid

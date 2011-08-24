@@ -26,7 +26,7 @@ def sendRequest(target,**kwargs):
     un = getInfo()
     kwargs["client"] = getInfo()
     kwargs["os"] = un['system']
-    kwargs['compid'] = "k4444" #un[1]
+    kwargs['compid'] = un[1]
     print kwargs
     posts = json.dumps(kwargs)
     posts=quote(posts)

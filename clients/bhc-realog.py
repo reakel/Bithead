@@ -32,10 +32,32 @@ if p:
 else:
     logpath = '/tmp/realogfile'
 
+n = len(argv)
+session = None
+if n == 1:
+    #Linux only
+    session = environ.get('PAM_TYPE')
+    if not session: 
+	#realog was not started by PAM, exit
+	exit(1)
+    if session == 'open_session':
+	session = 'login'
+    elif session == 'close_session':
+	print "close"
+	session = 'logout' 
+    else:
+	print session
+	exit(1)
+elif n == 2:
+    print "windows"
+    #Windows
+    session = argv[1]
+else:
+    exit(1)
 
 #### LOGIN ####
 ## Write login time
-if argv[1] == 'login':
+if session == 'login':
     entries = []
     try:
         
@@ -62,7 +84,7 @@ if argv[1] == 'login':
         entry['now'] = str(datetime.now())
         entry['errormsg'] = socket.gethostname() + ': Could not open logfile when trying to save login time'
         entry['error'] = e
-        sendRequest('realog', entry)
+        sendRequest('realog', **entry)
         # Send Error message, Quit program
     finally:
         exit()
@@ -70,7 +92,8 @@ if argv[1] == 'login':
 
 #### LOGOUT ####
 ## Write logout time and send  the log entry to bithead
-if argv[1] == 'logout':
+if session == 'logout':
+    print "logout"
     entries = []
     unsent_entries = []
     

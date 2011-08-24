@@ -14,9 +14,9 @@ class Realog(ClientHandler):
         #compid, user, login_time, logout_time,os , now (time on the client used for time correction)
 
         try:
-            machine_name = args["compid"]
+            machine_name = args["client"]["hostname"]
             username = args["user"]
-            os = args["os"]
+            os = args["system"]
             login_time = str2datetime(args["login_time"])
             logout_time = str2datetime(args["logout_time"])
             client_now = str2datetime(args["now"])
