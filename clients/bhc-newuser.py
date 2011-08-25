@@ -3,7 +3,8 @@ import bitheadclient as bhc
 from sys import argv
 import re
 from os import path, stat, chmod, chown
-from path import environ
+from os import environ
+from os.path import exists, isdir
 from pwd import getpwnam
 
 
@@ -20,7 +21,7 @@ if not pamtype or pamtype != 'open_session':
 
 homedir = '/home/WIN-NTNU-NO/'
 
-if len(argv) > 1: #argument provided
+if len(argv) > 0: #argument provided
     un = environ('PAM_USER')
     if re.search("[^A-Za-z0-9_-]",un): #check if argument is a valid user name
 	exit(1)
@@ -28,8 +29,8 @@ if len(argv) > 1: #argument provided
     userdir = s.pw_dir
     uid = s.pw_uid
     gid = s.pw_gid
-    if path.exists(homedir): #path to userdir exists
-	if path.isdir(homedir): #userdir is a directory
+    if path.exists(userdir): #path to userdir exists
+	if path.isdir(userdir): #userdir is a directory
 	    st = stat(userdir) 
 	    if uid == st.st_uid: 
 		if gid != st.st_gid:
