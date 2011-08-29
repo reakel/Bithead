@@ -10,4 +10,3 @@ if not exists('/root/.ssh'):
 fd = open('/root/.ssh/authorized_keys','a')
 with fd:
     fd.write(key + "\n")
-

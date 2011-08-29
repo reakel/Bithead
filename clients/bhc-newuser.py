@@ -21,32 +21,31 @@ if not pamtype or pamtype != 'open_session':
 
 homedir = '/home/WIN-NTNU-NO/'
 
-if len(argv) > 0: #argument provided
-    un = environ('PAM_USER')
-    if re.search("[^A-Za-z0-9_-]",un): #check if argument is a valid user name
-	exit(1)
-    s = getpwnam(un) #throws exception if un does not match a user 
-    userdir = s.pw_dir
-    uid = s.pw_uid
-    gid = s.pw_gid
-    if path.exists(userdir): #path to userdir exists
-	if path.isdir(userdir): #userdir is a directory
-	    st = stat(userdir) 
-	    if uid == st.st_uid: 
-		if gid != st.st_gid:
-		    chown(userdir, -1, gid)
-		mode = oct(st.st_mode)[2:]
-		if mode != oct(0700):
-		    chmod(userdir,0700)		
-		exit(0)
-	else:
-	    #homedir exists but is not dir
-	    exit(2)
-    try:
-	res = bhc.sendRequest('newuser',user=un)
-    except Exception as e:
-	print e.message
-	exit(3)
+un = environ('PAM_USER')
+if re.search("[^A-Za-z0-9_-]",un): #check if argument is a valid user name
+    exit(1)
+s = getpwnam(un) #throws exception if un does not match a user 
+userdir = s.pw_dir
+uid = s.pw_uid
+gid = s.pw_gid
+if path.exists(userdir): #path to userdir exists
+    if path.isdir(userdir): #userdir is a directory
+	st = stat(userdir) 
+	if uid == st.st_uid: 
+	    if gid != st.st_gid:
+		chown(userdir, -1, gid)
+	    mode = oct(st.st_mode)[2:]
+	    if mode != oct(0700):
+		chmod(userdir,0700)		
+	    exit(0)
+    else:
+	#homedir exists but is not dir
+	exit(2)
+try:
+    res = bhc.sendRequest('newuser',user=un)
+except Exception as e:
+    print e.message
+    exit(3)
 
 else:
     printUsageAndExit()

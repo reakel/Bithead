@@ -2,6 +2,21 @@
 odir=$PWD
 cd `dirname $0`
 cd deb-install
+if [ $1 ]
+then
+	echo $1 | grep -E '^[0-9.]+$' > /dev/null
+	if [ $? = 0 ] 
+	then 
+		version=$1
+	else
+		echo Invalid version number
+		exit 1
+	fi
+else
+	currver=`cat DEBIAN/control | grep -i version | sed -r 's/^ *version: *([0-9.]+)$/\1/i'`;
+	echo Please enter version number. Current version: $currver
+	exit 1
+fi
 rm -r usr
 mkdir usr
 mkdir -p usr/bin
@@ -17,7 +32,7 @@ chmod 755 usr/bin/*
 chmod 700 usr/sbin
 
 cp -r ../bitheadclient usr/lib/pymodules/python2.6/
-version=`grep "Version:" < DEBIAN/control | sed -E 's/^ *Version: *([0-9\.]+)$/\1/'`
+sed -ri "s/^( *version: *)([0-9.]+)\$/\\1$version/i" DEBIAN/control
 name="bithead-clients_$version"_all.deb
 echo $name
 cd ..
