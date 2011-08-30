@@ -21,7 +21,7 @@ if not pamtype or pamtype != 'open_session':
 
 homedir = '/home/WIN-NTNU-NO/'
 
-un = environ('PAM_USER')
+un = environ.get('PAM_USER')
 if re.search("[^A-Za-z0-9_-]",un): #check if argument is a valid user name
     exit(1)
 s = getpwnam(un) #throws exception if un does not match a user 

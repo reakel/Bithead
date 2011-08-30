@@ -24,9 +24,6 @@ def sendRequest(target,**kwargs):
     Throws exceptions on http errors or failure to parse json
     """
     un = getInfo()
-    kwargs["client"] = getInfo()
-    kwargs["os"] = un['system']
-    kwargs['compid'] = un[1]
     print kwargs
     posts = json.dumps(kwargs)
     posts=quote(posts)
