@@ -16,7 +16,7 @@ exi|ts with code != 0 if it cant be fixed
 takes user name as argument
 """
 pamtype = environ.get('PAM_TYPE')
-if not pamtype or pamtype != 'open_session':
+if not pamtype or pamtype != 'auth':
     exit(0)
 
 homedir = '/home/WIN-NTNU-NO/'
