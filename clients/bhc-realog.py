@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from bitheadclient import sendRequest
 from datetime import datetime
 from urllib import urlopen, urlencode
