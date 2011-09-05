@@ -16,12 +16,13 @@ class Realog(ClientHandler):
         try:
             machine_name = args["client"]["hostname"]
             username = args["user"]
-            os = args["system"]
+            os = args["client"]["system"]
             login_time = str2datetime(args["login_time"])
             logout_time = str2datetime(args["logout_time"])
             client_now = str2datetime(args["now"])
         except Exception as e:
-            raise Realog.Error(123, 'Invalid datetimestring: ' + e.message)
+	    raise e
+            #raise Realog.Error(123, 'Invalid datetimestring: ' + e.message)
 
         #correction times
         time_diff = server_now - client_now

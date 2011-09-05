@@ -25,6 +25,7 @@ def sendRequest(target,**kwargs):
     """
     un = getInfo()
     print kwargs
+    kwargs['client'] = un
     posts = json.dumps(kwargs)
     posts=quote(posts)
     url = addr + target
