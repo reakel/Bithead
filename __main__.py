@@ -46,7 +46,7 @@ class HTTPException(Exception):
 
 class MyRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
-        db = Database()
+	db = None
         try:
 	    try:
 		self.args
@@ -61,6 +61,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             if self.args: args.update(self.args)
             #self.validateArgs(args)
             args=self.args
+	    db = Database()
             handler = handlerClasses[cmd](self.client_address[0],args,db)
             handler.printLog('Connected')
             response = handler.getResponse()
@@ -83,7 +84,8 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             msg = json.dumps({ 'exeption': type, 'args':e.args})
             self.send_error(404,'Generic DIE: ' + msg)
         finally:
-            db.close()
+	    if db:
+		db.close()
     
     def send_default_response(self):
         self.send_response(200)
@@ -95,10 +97,11 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         try:
             posts = self.rfile.read(int(self.headers['Content-Length']))
             posts = unquote(posts)
+	    print posts
             self.args = json.loads(posts)
             self.do_GET()
         except Exception as e:
-            self.send_error(404,'Generic DIE: ' + e.message)
+            self.send_error(404,'Generic DIEEE: ' + e.message + ' ' + e.__class__.__name__)
             print e.message
 
 

@@ -24,6 +24,7 @@ def sendRequest(target,**kwargs):
     Throws exceptions on http errors or failure to parse json
     """
     un = getInfo()
+    if kwargs is None: kwargs = {}
     print kwargs
     kwargs['client'] = un
     posts = json.dumps(kwargs)

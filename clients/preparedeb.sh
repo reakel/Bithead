@@ -27,6 +27,7 @@ cp ../bhc-newuser.py usr/bin/bhc-newuser
 cp ../bhc-realog.py usr/bin/bhc-realog
 cp ../bhc-postinstall.py usr/sbin/bhc-postinstall
 cp ../bhc-pubkey.py usr/sbin/bhc-pubkey
+cp ../bhc-printers.py usr/sbin/bhc-printers
 
 chmod 755 usr/bin/*
 chmod 700 usr/sbin
