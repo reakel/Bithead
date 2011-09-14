@@ -17,10 +17,12 @@ class Printers(ClientHandler):
 	ret = {}
 	c = self.db.getCursor()
 	c.execute("""SELECT PrinterURI,Room.RoomID as RoomID FROM Computers LEFT JOIN Room ON Computers.RoomID=Room.RoomID WHERE CompID=%s""", (machine_name,))
-	(printerURI, roomID) = c.fetchone()
-	if printerURI is None: raise Printers.Error(1,'No printer defined')
-	ret['printerURI'] = printerURI
-	ret['roomID'] = roomID
+	(printer_URI, room_id) = c.fetchone()
+	if printer_URI is None: raise Printers.Error(1,'No printer defined')
+	ret['printer_info'] = { 
+		'printer_URI': printer_URI,
+		'room_id': room_id,
+		}
 	ret['status'] = 0
 	return ret
 
