@@ -57,7 +57,7 @@ class Postinstall(ClientHandler):
             #Preparing cmds
             cmds = []
             cmds.append(pre + " \'domainjoin-cli setname " + self.knr + "'")
-            cmds.append("echo \'" + Postinstall.adpassword + "\' | " + pre + " \'xargs domainjoin-cli felles.ntnu.no " + Postinstall.aduser + "\'")
+            cmds.append("echo \'" + Postinstall.adpassword + "\' | " + pre + " \'xargs domainjoin-cli join felles.ntnu.no " + Postinstall.aduser + "\'")
             cmds.append(pre + " \'/root/postinstall/lwreg\'")
             cmds.append(pre + " \'reboot\'")
             #Execute cmds and print to log
