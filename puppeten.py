@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from config import config
+from Bithead.config import config
 from database import Database
 from sys import argv
 import yaml
