@@ -26,7 +26,7 @@ class Postinstall(ClientHandler):
         self.knr = None
  
     def getResponse(self):
-        self.mac = dec2mac(self.args['client']['id']) 
+        self.mac = self.args['client']['id'] 
         self.fetchKnr()
         if not self.knr: 
             raise ClientHandler.Error(1001,'CompID not found in the database.')
@@ -37,6 +37,11 @@ class Postinstall(ClientHandler):
 
     def fetchKnr(self):
 	print self.mac
+	c = self.db.getCursor()
+	if c.execute("""SELECT CompID FROM Computers WHERE Mac = %s""", (self.mac, )):
+	    self.knr = c.fetchone()[0]
+	# TODO: Old method, delete
+	"""
 	computerDB = open('/usr/local/share/bithead/database/computers_db', 'r') # TODO: get file path from config
         compDB = computerDB.readlines()
         computerDB.close()
@@ -45,6 +50,7 @@ class Postinstall(ClientHandler):
             if( compList[2] == self.mac ):
                 self.knr = compList[1]
                 break
+		"""
     
     def doPostProcessing(self):
             if not self.knr_in_DB:
