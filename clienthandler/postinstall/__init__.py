@@ -32,13 +32,11 @@ class Postinstall(ClientHandler):
             raise ClientHandler.Error(1001,'CompID not found in the database.')
         self.knr_in_DB = True
         puppetca_cmd = "puppetca -c" + " " + self.knr + ".felles.ntnu.no"
-        #system(puppetca_cmd)
+        system(puppetca_cmd)
         return { 'status': '0', 'CompID': self.knr }        
 
     def fetchKnr(self):
 	print self.mac
-	self.knr = "k2202"
-	return
 	computerDB = open('/usr/local/share/bithead/database/computers_db', 'r') # TODO: get file path from config
         compDB = computerDB.readlines()
         computerDB.close()
@@ -56,6 +54,7 @@ class Postinstall(ClientHandler):
             pre = "ssh -o StrictHostKeyChecking=no root@" + self.addr
             #Preparing cmds
             cmds = []
+	    cmds.append("ssh-keygen -R %s" % self.knr) #Remove old public key from ~/.ssh/known_hosts
             cmds.append(pre + " \'domainjoin-cli setname " + self.knr + "'")
             cmds.append("echo \'" + Postinstall.adpassword + "\' | " + pre + " \'xargs domainjoin-cli join felles.ntnu.no " + Postinstall.aduser + "\'")
             cmds.append(pre + " \'/root/postinstall/lwreg\'")
