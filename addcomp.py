@@ -80,12 +80,13 @@ class Room(object):
 
 if __name__=='__main__':
     if len(argv) != 4:
+	print "Usage: addcomp roomid compid mac"
 	exit(1)
 
     try:
 	Database.loadConfig(config)
 	db = Database()
-	comp = Computer(argv[1],room=Room(argv[3],db), mac=argv[2], db=db) 
+	comp = Computer(argv[2],room=Room(argv[1],db), mac=argv[3], db=db) 
 	if comp.create_or_update():
 	    print "Successfully created or updated %s" % comp.k_nr
 	else:

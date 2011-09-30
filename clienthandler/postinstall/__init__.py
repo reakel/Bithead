@@ -60,11 +60,13 @@ class Postinstall(ClientHandler):
             pre = "ssh -o StrictHostKeyChecking=no root@" + self.addr
             #Preparing cmds
             cmds = []
-	    cmds.append("ssh-keygen -R %s" % self.knr) #Remove old public key from ~/.ssh/known_hosts
+	    cmds.append("ssh-keygen -R %s" % self.knr) #Remove old public key from ~/.ssh/known_hosts based on knr
+	    cmds.append("ssh-keygen -R %s" % self.addr) #Remove old public key from ~/.ssh/known_hosts based on ip
             cmds.append(pre + " \'domainjoin-cli setname " + self.knr + "'")
             cmds.append("echo \'" + Postinstall.adpassword + "\' | " + pre + " \'xargs domainjoin-cli join felles.ntnu.no " + Postinstall.aduser + "\'")
             cmds.append(pre + " \'/root/postinstall/lwreg\'")
             cmds.append(pre + " \'reboot\'")
+	    cmds.append("ssh-keygen -R %s" % self.addr) #Host name has changed, remove public key
             #Execute cmds and print to log
             for cmd in cmds:
                 self.printLog(cmd)

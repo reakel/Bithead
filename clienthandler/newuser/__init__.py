@@ -1,7 +1,7 @@
 from clienthandler import ClientHandler
-import subprocess
+from subprocess import Popen, PIPE
 import re
-from os import chmod, mkdir, chown
+from os import chmod, mkdir, chown, system
 import os
 class Newuser(ClientHandler):
 
@@ -14,9 +14,10 @@ class Newuser(ClientHandler):
             raise ClientHandler.Error(200, "User is not authorized!")
         try:
             cmd = "ssh root@%s -o StrictHostKeyChecking=no id %s" % (self.addr, user)
-            sshreturn = subprocess.check_output(cmd.split(" "))
-        except CalledProcessError as e:
-            errmsg = "Error when tryin to ssh to client:" + e.returncode + e.output
+	    p = Popen(cmd.split(), stdout=PIPE)
+	    sshreturn = p.stdout.read()
+        except Exception as e:
+            errmsg = "Error when tryin to ssh to client:" + e.message
             raise ClientHandler.Error(200, errmsg)
     
     #Use regexp to get userid and groupid from output from ssh
@@ -26,7 +27,7 @@ class Newuser(ClientHandler):
             raise ClientHandler.Error(200, "Id not found through ssh")
         uid = int(m.group(1))
         gid = int(m.group(2))
-        
+	print "Uid: %s, gid: %s" % (uid, gid) 
 	if os.path.exists(userdir):
 	    if not os.path.isdir(userdir):
 		raise ClientHandler.Error(userdir + " exists but is not directory")

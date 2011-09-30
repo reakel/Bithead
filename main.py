@@ -5,12 +5,15 @@ import string, cgi, time
 from os import curdir, sep
 import sys
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from SocketServer import ThreadingMixIn
+import threading
 import json
 import re
 from urlparse import parse_qs,unquote
 from config import config
 from clienthandler import ClientHandler
 from database import Database
+from time import sleep
 
 
 port = config.getint('http','port')
@@ -61,6 +64,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             handler = handlerClasses[cmd](self.client_address[0],args,db)
             handler.printLog('Connected')
             response = handler.getResponse()
+	    response['thread_name'] = threading.currentThread().getName()
             if not 'status' in response.keys(): 
                 response['status'] = '0'
             self.send_default_response()
@@ -118,11 +122,6 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             args[key] = value
         return args
 
-if __name__=='__main__':
-    try:
-        server = HTTPServer(('',port), MyRequestHandler)
-        print "Started HTTPServer, listening to port %s" % (port)
-        server.serve_forever()
-    except KeyboardInterrupt:
-        print 'TERM signal recieved, shutting down server'
-        server.socket.close()
+class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+    pass
+

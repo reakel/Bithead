@@ -32,12 +32,15 @@ if path.exists(userdir): #path to userdir exists
     if path.isdir(userdir): #userdir is a directory
 	st = stat(userdir) 
 	if uid == st.st_uid: 
-	    if gid != st.st_gid:
-		chown(userdir, -1, gid)
-	    mode = oct(st.st_mode)[2:]
-	    if mode != oct(0700):
-		chmod(userdir,0700)		
-	    exit(0)
+	    try:
+		if gid != st.st_gid:
+		    chown(userdir, -1, gid)
+		mode = oct(st.st_mode)[2:]
+		if mode != oct(0700):
+		    chmod(userdir,0700)		
+		exit(0)
+	    except Exception as e:
+		pass
     else:
 	#homedir exists but is not dir
 	exit(2)
@@ -46,6 +49,3 @@ try:
 except Exception as e:
     print e.message
     exit(3)
-
-else:
-    printUsageAndExit()
