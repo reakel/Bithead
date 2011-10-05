@@ -7,9 +7,11 @@ Script for updating /etc/hosts with ips by parsing Puppet fact files
 import yaml
 from os import chdir, listdir
 import re
+from datetime import datetime, timedelta
 
 factsdir  = "/var/lib/puppet/yaml/facts"
 hostsfile = "/etc/hosts"
+expiration_days = 2
 server = "curie.nt.ntnu.no"
 idstr = "#Bithead ipparser"
 hoststr = "%s\t%s\t%s\t" + idstr + "\n"
@@ -20,6 +22,7 @@ files = listdir('.')
 hosts = []
 e = re.compile("^((\w+)(\.\w+)+)\.yaml$")
 remexc = re.compile("^ *!.*$")
+today = datetime.now()
 while files:
     file = files.pop()
     res = e.match(file)
@@ -34,8 +37,11 @@ while files:
     lines = ''.join(lines)
     lines = lines.replace("!","")
     host_info = yaml.load(lines)
+    expired = today - host_info['expiration']
+    if (expired.days > 2): continue
     ipaddress = host_info['values']['ipaddress']
     hosts.append((ipaddress, host, hostshort))
+
 
 e = re.compile('#Reakel ipparser')
 fd = open(hostsfile, 'rw')
