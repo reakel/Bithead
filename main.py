@@ -16,7 +16,7 @@ from database import Database
 from time import sleep
 
 
-port = config.getint('http','port')
+port = config.getint('server','port')
 Database.loadConfig(config)
 
 handlerClasses = {}

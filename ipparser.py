@@ -21,7 +21,6 @@ chdir(factsdir)
 files = listdir('.')
 hosts = []
 e = re.compile("^((\w+)(\.\w+)+)\.yaml$")
-remexc = re.compile("^ *!.*$")
 today = datetime.now()
 while files:
     file = files.pop()
