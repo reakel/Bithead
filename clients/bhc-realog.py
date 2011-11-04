@@ -80,6 +80,12 @@ if session == 'login':
         fsave = open(logpath, 'w')
         dump(entries, fsave) 
         fsave.close()
+	try:
+	    entry['login'] = True
+	    #send login notice
+	    sendRequest('realog', **entry)
+	except:
+	    pass
     except IOError as e:
         entry = {}
         entry['now'] = str(datetime.now())

@@ -2,7 +2,8 @@
 
 
 import string, cgi, time
-from os import curdir, sep
+from os import curdir, sep, mkdir, chmod
+from os.path import exists, isdir
 import sys
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from SocketServer import ThreadingMixIn
@@ -14,9 +15,27 @@ from config import config
 from clienthandler import ClientHandler
 from database import Database
 from time import sleep
+from logable import Logable
 
 
 port = config.getint('server','port')
+logdir = config.get('server','logdir')
+
+if exists(logdir):
+    if not isdir(logdir):
+	print "Log path %s exists, but is not a directory" % logdir
+	exit(2)
+else:
+    try:
+	mkdir(logdir)
+	chmod(logdir,0700)
+	print "Logdir created with path %s" % logdir
+    except:
+	print "Could not create logdir %s" % logdir
+	exit(2)
+
+OUTPUT = open("%s/server" % logdir,'a')
+
 Database.loadConfig(config)
 
 handlerClasses = {}
@@ -61,7 +80,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             #self.validateArgs(args)
             args=self.args
 	    db = Database()
-            handler = handlerClasses[cmd](self.client_address[0],args,db)
+            handler = handlerClasses[cmd](self.client_address[0],args,db, output=OUTPUT)
             handler.printLog('Connected')
             response = handler.getResponse()
 	    response['thread_name'] = threading.currentThread().getName()
