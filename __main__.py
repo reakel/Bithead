@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from main import *
+import logging
 if __name__=='__main__':
     try:
         server = ThreadedHTTPServer(('',port), MyRequestHandler)
@@ -12,6 +13,8 @@ if __name__=='__main__':
 	while server_thread.isAlive():
 	    sleep(10)
     except KeyboardInterrupt:
+	print 'TERM signal recieved, shutting down server'
+    finally:
+	logging.shutdown()
 	server.socket.close()
     	server.shutdown()
-	print 'TERM signal recieved, shutting down server'
