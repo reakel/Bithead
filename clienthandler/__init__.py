@@ -2,14 +2,15 @@ from logable import Logable
 
 class ClientHandler(Logable):
     config = {}
-    def __init__(self,addr,args,db,**kwargs):
+    def __init__(self,addr,addr_str,args,db,**kwargs):
 	super(ClientHandler,self).__init__(**kwargs)
         self.db = db
         self.addr = addr
+	self.addr_str = addr_str
         self.args=args
 
     def printLog(self,str, *args, **kwargs):
-	extra = { 'clientip': self.addr }
+	extra = { 'clientip': self.addr_str }
 	if kwargs.get('extra'):
 	    kwargs['extra'].update(extra)
 	else:

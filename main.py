@@ -95,7 +95,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             #self.validateArgs(args)
             args=self.args
 	    db = Database()
-            handler = handlerClasses[cmd](self.client_address[0],args,db)
+            handler = handlerClasses[cmd](self.client_address[0],self.address_string(),args,db)
             handler.printLog('Connected')
             response = handler.getResponse()
 	    response['thread_name'] = threading.currentThread().getName()
