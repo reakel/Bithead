@@ -24,7 +24,7 @@ logdir = config.get('server','logdir')
 logfile = "%s/server" % logdir
 logfile_http = "%s/http" % logdir
 errorlog = "%s/error" % logdir
-LOG_FORMAT = "%(levelname)s: %(asctime)19.19s %(name)s %(clientip)s %(message)s"
+LOG_FORMAT = "%(levelname)s -- %(asctime)19.19s [%(name)s] <%(clientip)s>: %(message)s"
 LOG_LEVEL = logging.DEBUG
 
 if exists(logdir):
