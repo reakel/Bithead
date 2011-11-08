@@ -7,13 +7,17 @@ class ClientHandler(Logable):
         self.db = db
         self.addr = addr
         self.args=args
-        self.pre = '<' + str(self.addr) + '> '
 
-    def printLog(self,str):
-        super(ClientHandler,self).printLog(self.pre + str)
+    def printLog(self,str, *args, **kwargs):
+	extra = { 'clientip': self.addr }
+	if kwargs.get('extra'):
+	    kwargs['extra'].update(extra)
+	else:
+	    kwargs['extra'] = extra
+        super(ClientHandler,self).printLog(str, *args, **kwargs)
 
     def getResponse(self):
-        self.printLog('arguments: ' + self.args.__str__())
+        #for debugging #self.printLog('arguments: ' + self.args.__str__())
         return self.args
 
 #doPostProcessing() is called after getResponse()

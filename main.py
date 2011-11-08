@@ -16,10 +16,16 @@ from clienthandler import ClientHandler
 from database import Database
 from time import sleep
 from logable import Logable
+import logging
 
 
 port = config.getint('server','port')
 logdir = config.get('server','logdir')
+logfile = "%s/server" % logdir
+logfile_http = "%s/http" % logdir
+errorlog = "%s/error" % logdir
+LOG_FORMAT = "%(levelname)s: %(asctime)19.19s %(name)s %(clientip)s %(message)s"
+LOG_LEVEL = logging.DEBUG
 
 if exists(logdir):
     if not isdir(logdir):
@@ -34,7 +40,13 @@ else:
 	print "Could not create logdir %s" % logdir
 	exit(2)
 
-OUTPUT = open("%s/server" % logdir,'a')
+HTTPLOGGER = logging.Logger(name="HTTP", level=LOG_LEVEL)
+fh = logging.FileHandler(logfile_http)
+fh.setFormatter(logging.Formatter(fmt="%(asctime)19.19s: %(message)s"))
+HTTPLOGGER.addHandler(fh)
+logging.basicConfig(format=LOG_FORMAT, level=LOG_LEVEL, filename = logfile)
+#sys.stdout = open(logfile_http,'a',1)
+#sys.stderr = open(errorlog, 'a', 1)
 
 Database.loadConfig(config)
 
@@ -63,6 +75,9 @@ class HTTPException(Exception):
     pass
 
 class MyRequestHandler(BaseHTTPRequestHandler):
+    def log_message(self,format, *args):
+	HTTPLOGGER.info(format, *args, extra={'clientip':'1236'})
+
     def do_GET(self):
 	db = None
         try:
@@ -80,7 +95,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             #self.validateArgs(args)
             args=self.args
 	    db = Database()
-            handler = handlerClasses[cmd](self.client_address[0],args,db, output=OUTPUT)
+            handler = handlerClasses[cmd](self.client_address[0],args,db)
             handler.printLog('Connected')
             response = handler.getResponse()
 	    response['thread_name'] = threading.currentThread().getName()
