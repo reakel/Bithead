@@ -21,13 +21,11 @@ class Newuser(ClientHandler):
             raise ClientHandler.Error(200, errmsg)
     
     #Use regexp to get userid and groupid from output from ssh
-	self.printLog(sshreturn)
         m = re.search(r"uid=(\d+)\D+?gid=(\d+)", sshreturn)
         if m is None:
             raise ClientHandler.Error(200, "Id not found through ssh")
         uid = int(m.group(1))
         gid = int(m.group(2))
-	print "Uid: %s, gid: %s" % (uid, gid) 
 	if os.path.exists(userdir):
 	    if not os.path.isdir(userdir):
 		raise ClientHandler.Error(userdir + " exists but is not directory")
@@ -40,6 +38,7 @@ class Newuser(ClientHandler):
         chown(userdir,uid,gid)
         #Sets permissions for users home directory
 	chmod(userdir,0700)
+	self.printLog("User %s OK" % user)
         
         return {"status": 0}
 

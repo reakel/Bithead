@@ -36,7 +36,6 @@ class Postinstall(ClientHandler):
         return { 'status': '0', 'CompID': self.knr }        
 
     def fetchKnr(self):
-	print self.mac
 	c = self.db.getCursor()
 	if c.execute("""SELECT CompID FROM Computers WHERE Mac = %s""", (self.mac, )):
 	    self.knr = c.fetchone()[0]
