@@ -20,8 +20,8 @@ class Postinstall(ClientHandler):
     knr_in_DB = False
     knr = None
     
-    def __init__(self,addr,args,db): #constructor
-        super(Postinstall,self).__init__(addr,args,db)
+    def __init__(self,addr,addr_str,args,db): #constructor
+        super(Postinstall,self).__init__(addr,addr_str,args,db)
         self.knr_in_DB = False
         self.knr = None
  
