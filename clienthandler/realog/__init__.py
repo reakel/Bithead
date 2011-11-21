@@ -7,6 +7,7 @@ def str2datetime(str):
 
 class Realog(ClientHandler):
     def getResponse(self):
+        ret = {}
         server_now = datetime.now()
         super(Realog,self).getResponse()
         args = self.args
@@ -14,7 +15,7 @@ class Realog(ClientHandler):
         #compid, user, login_time, logout_time,os , now (time on the client used for time correction)
 
         try:
-	    if (args.get('error')): return { 'error':args.get('error') }
+	    if (args.get('error')): ret = { 'error':args.get('error') }
             machine_name = args["client"]["hostname"]
             username = args["user"]
             os = args["client"]["system"]
@@ -32,7 +33,6 @@ class Realog(ClientHandler):
 	    logout_time += time_diff
 	    login_time += time_diff
 
-        ret = {}
         try:
             c = self.db.getCursor()
 	    if args.get('login'):
