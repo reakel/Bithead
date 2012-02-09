@@ -2,6 +2,7 @@
 
 """
 Script for updating /etc/hosts with ips by parsing Puppet fact files
+Fact files contain ruby objects serialized as yaml strings
 """
 
 import yaml
@@ -16,25 +17,26 @@ server = "curie.nt.ntnu.no"
 idstr = "#Bithead ipparser"
 hoststr = "%s\t%s\t%s\t" + idstr + "\n"
 
-chdir(factsdir)
+chdir(factsdir) #Change working directory to Puppet facts dir
 
-files = listdir('.')
+files = listdir('.') #get files in facts dir
 hosts = []
-e = re.compile("^((\w+)(\.\w+)+)\.yaml$")
+e = re.compile("^((\w+)(\.\w+)+)\.yaml$")   #Regex that matches the naming convention
+					    #For a valid fact file i.e. hostname.domain.yaml
 today = datetime.now()
 while files:
     file = files.pop()
     res = e.match(file)
-    if not res: continue
-    host = res.group(1)
-    hostshort = res.group(2)
-    if host == server: continue
-    fd = open(file,'r')
+    if not res: continue	#file is not a fact file, go to next file
+    host = res.group(1)		#hostname.domain
+    hostshort = res.group(2)	#hostname
+    if host == server: continue #do not parse fact file for this computer
+    fd = open(file,'r')		
     lines = fd.readlines()
     fd.close()
     lines.pop(0)
     lines = ''.join(lines)
-    lines = lines.replace("!","")
+    lines = lines.replace("!","") #Need to remove '!' for the yaml parser to accept the string.
     host_info = yaml.load(lines)
     expired = today - host_info['expiration']
     if (expired.days > 2): continue
