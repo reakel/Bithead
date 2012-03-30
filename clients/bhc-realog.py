@@ -29,7 +29,7 @@ import socket
 # Set the path for the logfile with respect to the OS
 p = environ.get('WINDIR')
 if p:
-    logpath = p + '\\Temp\\realogfile'
+    logpath = p + '\\rl\\realogfile'
 else:
     logpath = '/tmp/realogfile'
 
