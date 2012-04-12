@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 
 
-import string, cgi, time
+import string, cgi, time, socket
 from os import curdir, sep, mkdir, chmod
 from os.path import exists, isdir
 import sys
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from SimpleHTTPServer import SimpleHTTPRequestHandler
 from SocketServer import ThreadingMixIn
 import threading
 import json
@@ -17,6 +18,8 @@ from database import Database
 from time import sleep
 from logable import Logable
 import logging
+
+from securehttpserver import SecureHTTPServer
 
 
 port = config.getint('server','port')
@@ -75,6 +78,11 @@ class HTTPException(Exception):
     pass
 
 class MyRequestHandler(BaseHTTPRequestHandler):
+    def setup(self):
+        self.connection = self.request
+        self.rfile = socket._fileobject(self.request, "rb", self.rbufsize)
+        self.wfile = socket._fileobject(self.request, "wb", self.wbufsize)
+
     def log_message(self,format, *args):
 	HTTPLOGGER.info(format, *args, extra={'clientip':'1236'})
 
@@ -157,5 +165,8 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         return args
 
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+    pass
+
+class ThreadedSecureHTTPServer(ThreadingMixIn, SecureHTTPServer):
     pass
 
