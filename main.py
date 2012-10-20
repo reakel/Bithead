@@ -106,7 +106,6 @@ class MyRequestHandler(BaseHTTPRequestHandler):
             handler = handlerClasses[cmd](self.client_address[0],self.address_string(),args,db)
             handler.printLog('Connected')
             response = handler.getResponse()
-	    response['thread_name'] = threading.currentThread().getName()
             if not 'status' in response.keys(): 
                 response['status'] = '0'
             self.send_default_response()
